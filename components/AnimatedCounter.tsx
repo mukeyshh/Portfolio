@@ -10,7 +10,7 @@ interface Props {
   duration?: number;
 }
 
-export default function AnimatedCounter({ to, suffix = "", prefix = "", duration = 1.6 }: Props) {
+export default function AnimatedCounter({ to, suffix = "", prefix = "", duration = 1 }: Props) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [count, setCount] = useState(0);

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Caveat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import CursorGlow from "@/components/CursorGlow";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +11,11 @@ const geistSans = Geist({
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
 });
 
@@ -38,6 +42,13 @@ export const metadata: Metadata = {
   },
 };
 
+// Stamps the theme on <html> before the browser paints, so the page never
+// flashes the wrong colours. Kept out of the component tree on purpose —
+// React won't re-run an inline script it renders on the client.
+// Light is the default; the OS setting is ignored until the visitor
+// picks a side with the toggle.
+const themeInit = `(function(){try{var s=localStorage.getItem('theme');var t=(s==='light'||s==='dark')?s:'light';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,16 +57,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${geistSans.variable} ${geistMono.variable} ${caveat.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-[#07070f] text-slate-100 overflow-x-hidden">
-        {/* Persistent background blobs — glassmorphism needs depth behind it */}
-        <div className="fixed inset-0 pointer-events-none z-0" aria-hidden>
-          <div className="absolute top-[-10%] left-[-5%] w-[600px] h-[600px] rounded-full bg-indigo-700/20 blur-[140px]" />
-          <div className="absolute top-[30%] right-[-10%] w-[500px] h-[500px] rounded-full bg-violet-700/15 blur-[120px]" />
-          <div className="absolute bottom-[10%] left-[20%] w-[400px] h-[400px] rounded-full bg-indigo-500/10 blur-[100px]" />
-        </div>
-        <CursorGlow />
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+      </head>
+      <body className="min-h-full flex flex-col bg-background text-foreground overflow-x-hidden">
         <Navbar />
         <main className="flex-1 relative z-10">{children}</main>
         <Footer />

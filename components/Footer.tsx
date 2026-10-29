@@ -11,6 +11,15 @@ const socials = [
     ),
   },
   {
+    name: "Medium",
+    href: "https://medium.com/@mrkhadka17",
+    icon: (
+      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
+      </svg>
+    ),
+  },
+  {
     name: "LinkedIn",
     href: "https://www.linkedin.com/in/mukeyshh/",
     icon: (
@@ -31,18 +40,18 @@ const navLinks = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] glass-nav py-12 px-6">
-      <div className="max-w-6xl mx-auto">
+    <footer className="border-t border-border py-12 px-6">
+      <div className="max-w-5xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Brand */}
           <div className="text-center md:text-left">
             <div className="flex items-center gap-2 justify-center md:justify-start mb-2">
-              <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xs">
+              <div className="w-7 h-7 rounded-full bg-chip flex items-center justify-center text-chip-fg font-bold text-xs">
                 M
               </div>
-              <span className="font-semibold text-slate-100">Mukesh</span>
+              <span className="font-semibold text-foreground">Mukesh</span>
             </div>
-            <p className="text-sm text-slate-500">QA Manager &amp; Automation Engineer</p>
+            <p className="text-sm text-subtle">QA Manager &amp; Automation Engineer</p>
           </div>
 
           {/* Nav */}
@@ -51,7 +60,7 @@ export default function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-slate-500 hover:text-slate-200 transition-colors"
+                className="text-sm text-muted hover:text-foreground transition-colors"
               >
                 {link.label}
               </Link>
@@ -67,7 +76,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.name}
-                className="w-9 h-9 rounded-lg glass flex items-center justify-center text-slate-500 hover:text-slate-200 transition-all"
+                className="w-9 h-9 rounded-full bg-card border border-border flex items-center justify-center text-subtle hover:text-foreground hover:border-border-strong transition-colors"
               >
                 {s.icon}
               </a>
@@ -75,7 +84,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-white/[0.06] text-center text-xs text-slate-600">
+        <div className="mt-8 pt-6 border-t border-border text-center text-xs text-subtle">
           <p>&copy; {new Date().getFullYear()} Mukesh Raj Khadka. Built with Next.js &amp; Tailwind CSS.</p>
         </div>
       </div>

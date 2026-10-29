@@ -1,31 +1,19 @@
-"use client";
-
-import { motion } from "framer-motion";
-import Link from "next/link";
 import type { Project } from "@/data/projects";
 
 interface ProjectCardProps {
   project: Project;
-  index?: number;
   showDetails?: boolean;
 }
 
 export default function ProjectCard({
   project,
-  index = 0,
   showDetails = false,
 }: ProjectCardProps) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 32, scale: 0.97 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.55, delay: index * 0.09, ease: [0.22, 1, 0.36, 1] }}
-      className="group glass rounded-2xl p-6 transition-all duration-300 flex flex-col"
-    >
+    <article className="group card card-hover p-6 flex flex-col h-full">
       {/* Category badge */}
       <div className="flex items-start justify-between mb-4">
-        <span className="px-2.5 py-1 text-xs font-medium bg-indigo-600/10 text-indigo-400 rounded-md border border-indigo-600/20">
+        <span className="px-3 py-1 text-xs font-medium bg-chip text-chip-fg rounded-full">
           {project.category}
         </span>
         <div className="flex gap-2">
@@ -34,7 +22,7 @@ export default function ProjectCard({
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 text-slate-500 hover:text-slate-200 transition-colors"
+              className="p-1.5 text-subtle hover:text-foreground transition-colors"
               aria-label="GitHub"
             >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -47,7 +35,7 @@ export default function ProjectCard({
               href={project.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-1.5 text-slate-500 hover:text-slate-200 transition-colors"
+              className="p-1.5 text-subtle hover:text-foreground transition-colors"
               aria-label="Live demo"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,29 +47,29 @@ export default function ProjectCard({
       </div>
 
       {/* Title */}
-      <h3 className="text-lg font-semibold text-slate-100 mb-3 group-hover:text-indigo-300 transition-colors">
+      <h3 className="text-lg font-semibold text-foreground mb-3 group-hover:underline group-hover:underline-offset-4 transition-colors">
         {project.title}
       </h3>
 
       {/* Description */}
-      <p className="text-sm text-slate-400 leading-relaxed mb-5">
+      <p className="text-sm text-muted leading-relaxed mb-5">
         {project.description}
       </p>
 
       {/* Details: Problem / Solution / Result */}
       {showDetails && (
         <div className="space-y-3 mb-5">
-          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-            <p className="text-xs font-semibold text-rose-400 mb-1">Problem</p>
-            <p className="text-xs text-slate-400 leading-relaxed">{project.details.problem}</p>
+          <div className="p-3 rounded-xl bg-surface border border-border">
+            <p className="text-xs font-semibold text-foreground mb-1">Problem</p>
+            <p className="text-xs text-muted leading-relaxed">{project.details.problem}</p>
           </div>
-          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-            <p className="text-xs font-semibold text-amber-400 mb-1">Solution</p>
-            <p className="text-xs text-slate-400 leading-relaxed">{project.details.solution}</p>
+          <div className="p-3 rounded-xl bg-surface border border-border">
+            <p className="text-xs font-semibold text-foreground mb-1">Solution</p>
+            <p className="text-xs text-muted leading-relaxed">{project.details.solution}</p>
           </div>
-          <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-            <p className="text-xs font-semibold text-emerald-400 mb-1">Result</p>
-            <p className="text-xs text-slate-400 leading-relaxed">{project.details.result}</p>
+          <div className="p-3 rounded-xl bg-surface border border-border">
+            <p className="text-xs font-semibold text-foreground mb-1">Result</p>
+            <p className="text-xs text-muted leading-relaxed">{project.details.result}</p>
           </div>
         </div>
       )}
@@ -91,12 +79,12 @@ export default function ProjectCard({
         {project.tech.map((t) => (
           <span
             key={t}
-            className="px-2 py-1 text-xs bg-white/[0.05] border border-white/[0.07] text-slate-400 rounded-md"
+            className="px-2.5 py-1 text-xs bg-surface text-muted rounded-full"
           >
             {t}
           </span>
         ))}
       </div>
-    </motion.article>
+    </article>
   );
 }

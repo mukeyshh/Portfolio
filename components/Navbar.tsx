@@ -14,8 +14,56 @@ const navLinks = [
   { href: "/contact", label: "Contact" },
 ];
 
-// Matches the reference: cubic-bezier(0.68, -0.55, 0.265, 1.55)
-const ELASTIC = [0.68, -0.55, 0.265, 1.55] as const;
+// The icon is picked by CSS off the theme attribute, so the button needs
+// no state and never disagrees with the server-rendered markup.
+function toggleTheme() {
+  const root = document.documentElement;
+  const next =
+    root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  root.setAttribute("data-theme", next);
+  try {
+    localStorage.setItem("theme", next);
+  } catch {
+    // Private mode — the choice just won't stick.
+  }
+}
+
+function ThemeToggle() {
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label="Toggle dark mode"
+      title="Toggle dark mode"
+      className="grid h-9 w-9 place-items-center rounded-full border border-border text-foreground transition-colors duration-200 hover:border-border-strong hover:bg-surface"
+    >
+      {/* Sun in light mode, moon in dark mode. */}
+      <svg
+        className="block h-4 w-4 dark:hidden"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+      </svg>
+      <svg
+        className="hidden h-4 w-4 dark:block"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+      </svg>
+    </button>
+  );
+}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -58,34 +106,35 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 border-b border-white/[0.07] transition-all duration-300 ${
-        scrolled ? "glass-nav" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 border-b transition-colors duration-200 ${
+        scrolled ? "bg-card border-border" : "bg-card/90 border-transparent"
       }`}
     >
-      <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
+      <nav className="max-w-5xl mx-auto px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center shrink-0">
           <Image
-            src="/images/mrk.png"
+            src="/images/mrk2.png"
             alt="Mukesh Raj Khadka"
             width={120}
             height={35}
-            className="h-9 w-auto"
+            priority
+            className="h-8 w-auto dark:invert"
           />
         </Link>
 
-        {/* Desktop nav — mirrors reference: relative + overflow-hidden container */}
+        {/* Desktop nav */}
         <div
           ref={navRef}
-          className="hidden md:flex items-end h-full relative overflow-visible"
+          className="hidden md:flex items-stretch h-full relative"
         >
-          {/* Sliding tab — rounded TOP corners only, elastic bounce, like .hori-selector */}
+          {/* Active-page underline */}
           {indicator && (
             <motion.div
-              className="absolute bottom-0 bg-indigo-500/[0.12] border border-indigo-500/25 rounded-t-2xl pointer-events-none"
-              style={{ top: 8 }} // margin-top: 10px equivalent
+              className="absolute bottom-0 h-0.5 bg-chip pointer-events-none"
+              initial={false}
               animate={{ left: indicator.left, width: indicator.width }}
-              transition={{ ease: ELASTIC, duration: 0.6 }}
+              transition={{ ease: "easeOut", duration: 0.2 }}
             />
           )}
 
@@ -96,10 +145,10 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 ref={(el) => { linkRefs.current[i] = el; }}
-                className={`relative z-10 px-5 pb-4 pt-5 text-sm font-medium transition-colors duration-300 ${
+                className={`relative z-10 flex items-center px-4 text-sm transition-colors duration-200 ${
                   isActive
-                    ? "text-indigo-400"
-                    : "text-slate-400 hover:text-slate-100"
+                    ? "text-foreground font-medium"
+                    : "text-subtle hover:text-foreground"
                 }`}
               >
                 {link.label}
@@ -108,29 +157,33 @@ export default function Navbar() {
           })}
         </div>
 
-        {/* Resume CTA */}
-        <div className="hidden md:flex items-center shrink-0">
-          <a
-            href="/resume.pdf"
-            download
-            className="px-4 py-2 text-sm bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors duration-200 font-medium"
-          >
-            Resume
-          </a>
-        </div>
+        {/* Resume CTA + theme toggle */}
+        <div className="flex items-center gap-3 shrink-0">
+          <ThemeToggle />
 
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-slate-400 hover:text-slate-100 transition-colors"
-          aria-label="Toggle menu"
-        >
-          <div className="w-5 space-y-1.5">
-            <span className={`block h-0.5 bg-current transition-transform duration-200 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
-            <span className={`block h-0.5 bg-current transition-opacity duration-200 ${mobileOpen ? "opacity-0" : ""}`} />
-            <span className={`block h-0.5 bg-current transition-transform duration-200 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+          <div className="hidden md:flex items-center">
+            <a
+              href="/resume.pdf"
+              download
+              className="btn btn-primary px-4 py-2 text-sm"
+            >
+              Resume
+            </a>
           </div>
-        </button>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="md:hidden p-2 text-foreground"
+            aria-label="Toggle menu"
+          >
+            <div className="w-5 space-y-1.5">
+              <span className={`block h-0.5 bg-current transition-transform duration-200 ${mobileOpen ? "rotate-45 translate-y-2" : ""}`} />
+              <span className={`block h-0.5 bg-current transition-opacity duration-200 ${mobileOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-0.5 bg-current transition-transform duration-200 ${mobileOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            </div>
+          </button>
+        </div>
       </nav>
 
       {/* Mobile menu */}
@@ -140,8 +193,8 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden border-t border-white/[0.06] glass-nav"
+            transition={{ duration: 0.15 }}
+            className="md:hidden border-t border-border bg-card"
           >
             <div className="px-6 py-4 space-y-1">
               {navLinks.map((link) => {
@@ -150,21 +203,21 @@ export default function Navbar() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`block px-4 py-3 text-sm rounded-lg transition-colors ${
+                    className={`block px-3 py-2.5 text-sm rounded-full transition-colors ${
                       isActive
-                        ? "text-indigo-400 bg-indigo-600/10"
-                        : "text-slate-400 hover:text-slate-100 hover:bg-white/5"
+                        ? "text-foreground bg-surface border border-border"
+                        : "text-muted hover:text-foreground"
                     }`}
                   >
                     {link.label}
                   </Link>
                 );
               })}
-              <div className="pt-2">
+              <div className="pt-3">
                 <a
                   href="/resume.pdf"
                   download
-                  className="block w-full text-center px-4 py-3 text-sm bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-colors font-medium"
+                  className="btn btn-primary w-full justify-center px-4 py-2.5 text-sm"
                 >
                   Download Resume
                 </a>

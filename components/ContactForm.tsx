@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 
 interface FormState {
   name: string;
@@ -48,69 +47,71 @@ export default function ContactForm() {
   };
 
   const inputClass = (field: keyof FormErrors) =>
-    `w-full bg-white/[0.04] backdrop-blur-sm border rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-2 transition-all ${
+    `w-full bg-card border rounded-xl px-4 py-2.5 text-sm text-foreground placeholder-subtle focus:outline-none focus:ring-2 transition-colors ${
       errors[field]
-        ? "border-rose-500/40 focus:ring-rose-500/20"
-        : "border-white/[0.08] focus:ring-indigo-500/25 focus:border-indigo-500/40"
+        ? "border-foreground focus:ring-border"
+        : "border-border-strong focus:border-foreground focus:ring-border"
     }`;
 
   return (
-    <motion.form
-      onSubmit={handleSubmit}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-      className="glass rounded-2xl p-8 space-y-5"
-    >
+    <form onSubmit={handleSubmit} className="card p-8 space-y-5">
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
           Name
         </label>
         <input
+          id="name"
+          name="name"
           type="text"
+          autoComplete="name"
           placeholder="Your full name"
           value={form.name}
           onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           className={inputClass("name")}
         />
         {errors.name && (
-          <p className="mt-1.5 text-xs text-rose-400">{errors.name}</p>
+          <p className="mt-1.5 text-xs text-foreground">{errors.name}</p>
         )}
       </div>
 
       {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
           Email
         </label>
         <input
+          id="email"
+          name="email"
           type="email"
+          autoComplete="email"
           placeholder="you@example.com"
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
           className={inputClass("email")}
         />
         {errors.email && (
-          <p className="mt-1.5 text-xs text-rose-400">{errors.email}</p>
+          <p className="mt-1.5 text-xs text-foreground">{errors.email}</p>
         )}
       </div>
 
       {/* Message */}
       <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">
+        <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
           Message
         </label>
         <textarea
+          id="message"
+          name="message"
           rows={5}
+          autoComplete="off"
           placeholder="Tell me about your project or opportunity..."
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
           className={`${inputClass("message")} resize-none`}
         />
         {errors.message && (
-          <p className="mt-1.5 text-xs text-rose-400">{errors.message}</p>
+          <p className="mt-1.5 text-xs text-foreground">{errors.message}</p>
         )}
       </div>
 
@@ -118,7 +119,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending" || status === "success"}
-        className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors duration-200 flex items-center justify-center gap-2"
+        className="btn btn-primary w-full justify-center py-3 text-sm disabled:opacity-60 disabled:cursor-not-allowed"
       >
         {status === "sending" ? (
           <>
@@ -141,15 +142,15 @@ export default function ContactForm() {
       </button>
 
       {status === "success" && (
-        <p className="text-sm text-emerald-400 text-center">
+        <p className="text-sm text-foreground text-center">
           Thanks! I&apos;ll get back to you within 24 hours.
         </p>
       )}
       {status === "error" && (
-        <p className="text-sm text-rose-400 text-center">
+        <p className="text-sm text-foreground text-center">
           Something went wrong. Please try again or email me directly.
         </p>
       )}
-    </motion.form>
+    </form>
   );
 }
